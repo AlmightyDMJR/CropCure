@@ -6,7 +6,7 @@ export default function SourceNote() {
         <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
       </svg>
       <span>
-        Treatment informed by peer-reviewed plant pathology research · Explore studies at{' '}
+        Treatment informed by peer-reviewed plant & crop pathology research · Explore studies at{' '}
         <a
           href="https://consensus.app"
           target="_blank"

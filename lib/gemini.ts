@@ -16,9 +16,9 @@ const anthropic = new Anthropic({
 // plant photo and what JSON shape to return. Keep it as-is; you will focus
 // on the API call below.
 
-export const PLANT_DIAGNOSIS_SYSTEM_PROMPT = `You are an expert plant pathologist with deep knowledge of plant diseases, nutrient deficiencies, and pest damage. Analyze the provided plant image using the following systematic diagnostic sequence:
+export const PLANT_DIAGNOSIS_SYSTEM_PROMPT = `You are an expert plant and crop pathologist with deep knowledge of plant and crop diseases, nutrient deficiencies, and pest damage. Analyze the provided plant or crop image using the following systematic diagnostic sequence:
 
-1. SYMPTOM DISTRIBUTION: First assess where symptoms appear on the plant. Are they on old leaves, new growth, whole plant, or localized areas? Distribution pattern is critical for diagnosis.
+1. SYMPTOM DISTRIBUTION: First assess where symptoms appear on the plant or crop. Are they on old leaves, new growth, whole plant, or localized areas? Distribution pattern is critical for diagnosis.
 
 2. TISSUE CHARACTERISTICS: Examine the specific visual properties of affected tissue. Note the color of lesions (brown, black, yellow, white, gray), the texture (powdery, wet, dry, sunken, raised), the margin definition (sharp or diffuse), and whether affected areas are necrotic or chlorotic.
 
@@ -81,6 +81,43 @@ export async function analyzePlantImage(
   base64Image: string,
   mimeType: string
 ): Promise<Partial<DiagnosisResult>> {
-  // ✏️  Write your implementation here
-  throw new Error('analyzePlantImage not implemented yet')
+
+  const validMime =
+    mimeType === 'image/jpeg' ||
+      mimeType === 'image/png' ||
+      mimeType === 'image/gif' ||
+      mimeType === 'image/webp'
+      ? mimeType
+      : 'image/jpeg';
+
+  const message = await anthropic.messages.create({
+    model: 'claude-opus-4-5',
+    max_tokens: 1024,
+    messages: [{
+      role: 'user',
+      content: [
+        {
+          type: 'image', source: {
+            type: 'base64', media_type: validMime as
+              | "image/jpeg"
+              | "image/png"
+              | "image/gif"
+              | "image/webp", data: base64Image
+          }
+        },
+        { type: 'text', text: PLANT_DIAGNOSIS_SYSTEM_PROMPT },
+      ],
+    }],
+  });
+
+  const text = message.content.filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) throw new Error('No JSON object found in AI response');
+  const json = jsonMatch[0];
+  try {
+    return JSON.parse(json) as Partial<DiagnosisResult>;
+  } catch (error) {
+    throw new Error(`Failed to parse JSON from AI response: ${error instanceof Error ? error.message : String(error)}`);
+  }
+
 }

@@ -27,47 +27,50 @@ export async function POST(request: NextRequest) {
   let diagnosis_id: string | undefined
 
   try {
-    // TODO 14 ── Parse the JSON body
-    // const body = await request.json()
-    // const { image_url, diagnosis_id: id } = body as { image_url?: string; diagnosis_id?: string }
-    // If either is missing → return 400
-    // Set diagnosis_id = id so the catch block can mark it as 'error'
+    
+    const body = await request.json()
+    const{image_url,diagnosis_id:id} = body as {image_url?:string,diagnosis_id?:string}
 
-    // ✏️  Write your JSON parsing and validation here
+    if(!image_url){
+      return Response.json({ error: 'Missing image_url or diagnosis_id' }, { status: 400 })
+    }
+    diagnosis_id = id;
 
-    // TODO 15 ── Set up a 25-second timeout race
-    // const timeoutPromise = new Promise<never>((_, reject) =>
-    //   setTimeout(() => reject(new Error('TIMEOUT')), 25000)
-    // )
+    const timeoutPromise = new Promise<never>((_, reject) =>{
+     setTimeout(
+      () => reject(new Error('Analysis timed out. Please try again.')),
+       25000);
+    });
 
-    // ✏️  Write your timeout promise here
+    const analysisPromise = async()=>{
+      const imageResponse = await fetch(image_url);
+      if(!imageResponse.ok){
+        throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+      }
+      const arrayBuffer = await imageResponse.arrayBuffer();
+      const base64 = Buffer.from(arrayBuffer).toString('base64');
+      const mimeType = getMimeFromUrl(image_url);
+      
+      return analyzePlantImage(base64, mimeType);
+    };
 
-    // TODO 16 ── Build the analysis promise
-    // This async function should:
-    //   1. fetch(image_url) and check response.ok
-    //   2. Convert arrayBuffer → base64 string using Buffer.from(...).toString('base64')
-    //   3. Get the mimeType with getMimeFromUrl(image_url)
-    //   4. Return analyzePlantImage(base64, mimeType)
-    //
-    // const analysisPromise = async () => { ... }
+    const analysisResult = await Promise.race([
+      analysisPromise(),
+      timeoutPromise,
+    ]);
 
-    // ✏️  Write your analysis promise here
+   const updated = await updateDiagnosis(id!,{
+    ...analysisResult,
+    status: 'complete' });
+   
+    return Response.json(updated);
+   
 
-    // TODO 17 ── Race the analysis against the timeout
-    // const analysisResult = await Promise.race([analysisPromise(), timeoutPromise])
 
-    // ✏️  Write your Promise.race here
-
-    // TODO 18 ── Update the diagnosis row to 'complete'
-    // const updated = await updateDiagnosis(id, { ...analysisResult, status: 'complete' })
-    // return Response.json(updated)
-
-    // ✏️  Write your database update and return here
-
-    return Response.json({ error: 'Route not implemented yet' }, { status: 501 })
+  
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
-    console.error('[diagnose route]', message)
+    console.error('[diagnose route]', message);
 
     // Mark the diagnosis row as 'error' so the UI can show the failure state
     if (diagnosis_id) {
