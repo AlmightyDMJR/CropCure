@@ -1,5 +1,5 @@
-// ─── AI vision analysis (Claude / Anthropic) ─────────────────────────────────
-// Despite the filename, this module previously used the Anthropic SDK (claude-opus-4-5).
+// ─── AI vision analysis (Claude / Ollama and Consensus MCP) ─────────────────────────────────
+// Despite the filename, this module previously used the Ollama SDK 
 // It now sends a base64-encoded plant photo to Ollama API and parses the structured
 // JSON diagnosis that comes back.
 
@@ -43,33 +43,7 @@ Important calibration rules:
 - If the image shows ambiguous early-stage symptoms where two conditions are genuinely difficult to distinguish, note this explicitly in diagnostic_notes and lower the confidence_score accordingly.
 - severity must be exactly one of: mild, moderate, or severe. Base this on the percentage of plant tissue affected and the aggressiveness of symptom spread.`
 
-// ─────────────────────────────────────────────────────────────────────────────
 
-// TODO 7 ── analyzePlantImage
-// Send a base64-encoded image to Claude and return the parsed diagnosis JSON.
-//
-// Steps:
-// 1. Validate / normalise the mimeType — only 'image/jpeg', 'image/png',
-//    'image/gif', 'image/webp' are accepted by the API; fall back to 'image/jpeg'.
-//
-// 2. Call anthropic.messages.create({
-//      model: 'claude-opus-4-5',
-//      max_tokens: 1024,
-//      messages: [{
-//        role: 'user',
-//        content: [
-//          { type: 'image', source: { type: 'base64', media_type: validMime, data: base64Image } },
-//          { type: 'text',  text: PLANT_DIAGNOSIS_SYSTEM_PROMPT },
-//        ],
-//      }],
-//    })
-//
-// 3. Extract the text from message.content (filter type === 'text', join, trim).
-//
-// 4. Match the first {...} JSON block with /\{[\s\S]*\}/ — throw if none found.
-//
-// 5. JSON.parse and return the result cast as Partial<DiagnosisResult>.
-//    Wrap the parse in try/catch and throw a descriptive error on failure.
 
 export async function analyzePlantImage(
   base64Image: string,

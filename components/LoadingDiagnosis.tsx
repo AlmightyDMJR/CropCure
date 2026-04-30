@@ -6,7 +6,7 @@ interface Props {
 
 const labels = [
   { text: 'Uploading photo', sub: 'Sending to secure storage' },
-  { text: 'Analyzing with AI', sub: 'Claude is reading the image' },
+  { text: 'Analyzing with AI', sub: 'AI is reading the image' },
   { text: 'Saving results', sub: 'Almost done' },
 ]
 

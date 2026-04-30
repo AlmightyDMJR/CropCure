@@ -2,8 +2,9 @@
 // Receives { image_url, diagnosis_id } as JSON.
 // Fetches the image, converts to base64, calls the Claude vision analysis,
 // and updates the diagnosis row to status='complete' (or 'error' on failure).
-//
+// 
 // Has a 25-second hard timeout to avoid serverless function timeouts.
+// We are using Ollama api with help of Claude and Consensus MCP
 
 import { NextRequest } from 'next/server'
 import { analyzePlantImage } from '@/lib/gemini'
@@ -27,30 +28,30 @@ export async function POST(request: NextRequest) {
   let diagnosis_id: string | undefined
 
   try {
-    
-    const body = await request.json()
-    const{image_url,diagnosis_id:id} = body as {image_url?:string,diagnosis_id?:string}
 
-    if(!image_url){
+    const body = await request.json()
+    const { image_url, diagnosis_id: id } = body as { image_url?: string, diagnosis_id?: string }
+
+    if (!image_url) {
       return Response.json({ error: 'Missing image_url or diagnosis_id' }, { status: 400 })
     }
     diagnosis_id = id;
 
-    const timeoutPromise = new Promise<never>((_, reject) =>{
-     setTimeout(
-      () => reject(new Error('Analysis timed out. Please try again.')),
-       120000); // Increased timeout to 120 seconds for large 235b model
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(
+        () => reject(new Error('Analysis timed out. Please try again.')),
+        120000); // Increased timeout to 120 seconds for large 235b model
     });
 
-    const analysisPromise = async()=>{
+    const analysisPromise = async () => {
       const imageResponse = await fetch(image_url);
-      if(!imageResponse.ok){
+      if (!imageResponse.ok) {
         throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
       }
       const arrayBuffer = await imageResponse.arrayBuffer();
       const base64 = Buffer.from(arrayBuffer).toString('base64');
       const mimeType = getMimeFromUrl(image_url);
-      
+
       return analyzePlantImage(base64, mimeType);
     };
 
@@ -59,15 +60,16 @@ export async function POST(request: NextRequest) {
       timeoutPromise,
     ]);
 
-   const updated = await updateDiagnosis(id!,{
-    ...analysisResult,
-    status: 'complete' });
-   
+    const updated = await updateDiagnosis(id!, {
+      ...analysisResult,
+      status: 'complete'
+    });
+
     return Response.json(updated);
-   
 
 
-  
+
+
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
     console.error('[diagnose route]', message);
