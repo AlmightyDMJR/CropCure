@@ -1,15 +1,9 @@
 // ─── AI vision analysis (Claude / Anthropic) ─────────────────────────────────
-// Despite the filename, this module uses the Anthropic SDK (claude-opus-4-5).
-// It sends a base64-encoded plant photo to Claude and parses the structured
+// Despite the filename, this module previously used the Anthropic SDK (claude-opus-4-5).
+// It now sends a base64-encoded plant photo to Ollama API and parses the structured
 // JSON diagnosis that comes back.
 
-import Anthropic from '@anthropic-ai/sdk'
 import type { DiagnosisResult } from './types'
-
-// The Anthropic client reads ANTHROPIC_API_KEY from the environment automatically.
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-})
 
 // ─── System prompt ───────────────────────────────────────────────────────────
 // This is the detailed prompt that instructs Claude how to think about a
@@ -82,35 +76,30 @@ export async function analyzePlantImage(
   mimeType: string
 ): Promise<Partial<DiagnosisResult>> {
 
-  const validMime =
-    mimeType === 'image/jpeg' ||
-      mimeType === 'image/png' ||
-      mimeType === 'image/gif' ||
-      mimeType === 'image/webp'
-      ? mimeType
-      : 'image/jpeg';
-
-  const message = await anthropic.messages.create({
-    model: 'claude-opus-4-5',
-    max_tokens: 1024,
-    messages: [{
-      role: 'user',
-      content: [
-        {
-          type: 'image', source: {
-            type: 'base64', media_type: validMime as
-              | "image/jpeg"
-              | "image/png"
-              | "image/gif"
-              | "image/webp", data: base64Image
-          }
-        },
-        { type: 'text', text: PLANT_DIAGNOSIS_SYSTEM_PROMPT },
-      ],
-    }],
+  const response = await fetch('https://ollama.com/api/generate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.OLLAMA_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'qwen3-vl:235b-instruct',
+      prompt: PLANT_DIAGNOSIS_SYSTEM_PROMPT,
+      images: [base64Image],
+      stream: false,
+      format: "json"
+    })
   });
 
-  const text = message.content.filter((b) => b.type === 'text').map((b) => b.text).join('').trim();
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Ollama API error details:", errorText);
+    throw new Error(`Ollama API error: ${response.statusText}. Details: ${errorText}`);
+  }
+
+  const data = await response.json();
+  const text = data.response;
+
   const jsonMatch = text.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('No JSON object found in AI response');
   const json = jsonMatch[0];

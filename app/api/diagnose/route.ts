@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const timeoutPromise = new Promise<never>((_, reject) =>{
      setTimeout(
       () => reject(new Error('Analysis timed out. Please try again.')),
-       25000);
+       120000); // Increased timeout to 120 seconds for large 235b model
     });
 
     const analysisPromise = async()=>{
