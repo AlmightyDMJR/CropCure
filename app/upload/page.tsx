@@ -3,8 +3,9 @@
 // ─── Upload page ──────────────────────────────────────────────────────────────
 
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import PhotoGuide from '@/components/PhotoGuide'
 import UploadZone from '@/components/UploadZone'
 import LoadingDiagnosis from '@/components/LoadingDiagnosis'
@@ -17,6 +18,7 @@ export default function UploadPage() {
   const [loading, setLoading] = useState(false)
   const [steps, setSteps] = useState<[StepStatus, StepStatus, StepStatus]>(['waiting', 'waiting', 'waiting'])
   const [error, setError] = useState<string | null>(null)
+  const bottomRef = useRef<HTMLDivElement>(null)
 
   const setStep = (idx: 0 | 1 | 2, status: StepStatus) => {
     setSteps((prev) => {
@@ -57,6 +59,10 @@ export default function UploadPage() {
     setLoading(true);
 
     setSteps(['active', 'waiting', 'waiting']);
+
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 100);
 
     try {
       const form = new FormData();
@@ -105,7 +111,12 @@ export default function UploadPage() {
 
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-2xl mx-auto"
+    >
 
       {/* Header */}
       <div className="mb-8">
@@ -135,9 +146,11 @@ export default function UploadPage() {
       )}
 
       {/* CTA button */}
-      <button
+      <motion.button
         onClick={handleAnalyze}
         disabled={!file || loading}
+        whileHover={file && !loading ? { scale: 1.02 } : {}}
+        whileTap={file && !loading ? { scale: 0.98 } : {}}
         className="mt-5 w-full py-4 rounded-xl text-white text-sm font-semibold flex items-center justify-center gap-2.5 transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
         style={{
           background: file && !loading ? 'linear-gradient(135deg, #16a34a, #15803d)' : '#94a3b8',
@@ -159,7 +172,7 @@ export default function UploadPage() {
             Analyze Plant
           </>
         )}
-      </button>
+      </motion.button>
 
       {/* Loading stepper */}
       {loading && (
@@ -167,6 +180,7 @@ export default function UploadPage() {
           <LoadingDiagnosis steps={steps} />
         </div>
       )}
-    </div>
+      <div ref={bottomRef} />
+    </motion.div>
   )
 }

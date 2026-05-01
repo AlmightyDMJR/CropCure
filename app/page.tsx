@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 const features = [
   {
@@ -60,67 +63,117 @@ export default function HomePage() {
             Powered by AI Vision
           </div>
 
-          <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold text-slate-900 leading-[1.05] tracking-tight mb-6">
+          <motion.h1 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            whileHover={{ scale: 1.03, textShadow: "0px 15px 30px rgba(0,0,0,0.1)" }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+            className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold text-slate-900 leading-[1.05] tracking-tight mb-6 cursor-default inline-block"
+          >
             Know what&apos;s wrong<br />
             <span className="text-gradient">with your crop.</span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-lg text-slate-500 max-w-xl mx-auto leading-relaxed mb-10">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            className="text-lg text-slate-500 max-w-xl mx-auto leading-relaxed mb-10"
+          >
             Upload a photo and get an AI-powered diagnosis with treatment steps grounded in plant & crop pathology research — in under 30 seconds.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              href="/upload"
-              className="btn-glow inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl text-sm shadow-lg shadow-green-200 transition-colors"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="16 16 12 12 8 16" />
-                <line x1="12" y1="12" x2="12" y2="21" />
-                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
-              </svg>
-              Start Diagnosis
-            </Link>
-            <Link
-              href="/history"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-sm border border-slate-200 shadow-sm transition-colors"
-            >
-              View History
-            </Link>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+            className="flex flex-col sm:flex-row gap-3 justify-center"
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+              <Link
+                href="/upload"
+                className="btn-glow inline-flex w-full items-center justify-center gap-2 px-7 py-3.5 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl text-sm shadow-lg shadow-green-200 transition-colors"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <polyline points="16 16 12 12 8 16" />
+                  <line x1="12" y1="12" x2="12" y2="21" />
+                  <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                </svg>
+                Start Diagnosis
+              </Link>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+              <Link
+                href="/history"
+                className="inline-flex w-full items-center justify-center gap-2 px-7 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-sm border border-slate-200 shadow-sm transition-colors"
+              >
+                View History
+              </Link>
+            </motion.div>
+          </motion.div>
 
-          <p className="mt-5 text-xs text-slate-400">
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-5 text-xs text-slate-400"
+          >
             Treatment guidance informed by peer-reviewed plant & crop pathology research
-          </p>
+          </motion.p>
         </div>
       </section>
 
       {/* ── How it works ── */}
       <section className="max-w-4xl mx-auto px-4 mb-20">
-        <div className="rounded-2xl bg-slate-900 p-8 sm:p-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="rounded-2xl bg-slate-900 p-8 sm:p-10"
+        >
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-6">How it works</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {steps.map((s) => (
-              <div key={s.n} className="flex gap-4 items-start">
+            {steps.map((s, i) => (
+              <motion.div 
+                key={s.n} 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.15 }}
+                className="flex gap-4 items-start p-3 -m-3 rounded-xl hover:bg-slate-800/50 cursor-default"
+              >
                 <span className="font-display text-3xl font-semibold text-green-500 leading-none flex-shrink-0">{s.n}</span>
                 <p className="text-sm text-slate-300 leading-relaxed pt-1">{s.text}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── Features ── */}
       <section className="max-w-5xl mx-auto px-4 pb-24">
-        <div className="text-center mb-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-10"
+        >
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Why CropCure</p>
           <h2 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900">Built for accuracy, not impressiveness</h2>
-        </div>
+        </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-          {features.map((f) => (
-            <div
+          {features.map((f, i) => (
+            <motion.div
               key={f.title}
-              className="group rounded-2xl border border-slate-200 bg-white p-6 hover:border-green-300 hover:shadow-lg hover:shadow-green-50 transition-all"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="group rounded-2xl border border-slate-200 bg-white p-6 hover:border-green-300 hover:shadow-xl hover:shadow-green-100 transition-colors cursor-pointer"
             >
               <div className="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
                 {f.icon}
@@ -128,11 +181,15 @@ export default function HomePage() {
               <p className="text-[10px] font-bold uppercase tracking-widest text-green-600 mb-1.5">{f.label}</p>
               <h3 className="font-semibold text-slate-900 text-[15px] mb-2 leading-snug">{f.title}</h3>
               <p className="text-sm text-slate-500 leading-relaxed">{f.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
 
+      {/* ── Footer ── */}
+      <footer className="text-center py-8 text-sm text-slate-400 border-t border-slate-100">
+        &copy; 2026 CropCure
+      </footer>
     </div>
   )
 }

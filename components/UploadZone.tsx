@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, DragEvent, ChangeEvent } from 'react'
+import { motion } from 'framer-motion'
 
 interface Props {
   onFileSelect: (file: File) => void
@@ -46,14 +47,21 @@ export default function UploadZone({ onFileSelect }: Props) {
 
   return (
     <div className="w-full">
-      <div
+      <motion.div
         onClick={() => !selectedFile && inputRef.current?.click()}
         onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        className={`relative w-full rounded-2xl border-2 border-dashed transition-all duration-200 ${
+        whileHover={!selectedFile && !dragging ? { scale: 1.01, boxShadow: "0px 10px 30px rgba(0,0,0,0.05)" } : {}}
+        whileTap={!selectedFile ? { scale: 0.98 } : {}}
+        animate={{ 
+          scale: dragging ? 1.02 : 1,
+          boxShadow: dragging ? "0px 15px 40px rgba(34, 197, 94, 0.2)" : "0px 0px 0px rgba(0,0,0,0)"
+        }}
+        transition={{ duration: 0.2 }}
+        className={`relative w-full rounded-2xl border-2 border-dashed transition-colors ${
           dragging
-            ? 'border-green-500 bg-green-50 scale-[1.01]'
+            ? 'border-green-500 bg-green-50'
             : selectedFile
             ? 'border-green-400 bg-white cursor-default'
             : 'border-slate-200 bg-slate-50 hover:border-green-400 hover:bg-green-50/40 cursor-pointer'
@@ -62,7 +70,14 @@ export default function UploadZone({ onFileSelect }: Props) {
       >
         {!selectedFile ? (
           <div className="flex flex-col items-center justify-center p-10 text-center h-full" style={{ minHeight: '220px' }}>
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-colors ${dragging ? 'bg-green-100' : 'bg-slate-100'}`}>
+            <motion.div 
+              animate={dragging ? { y: [-5, 5, -5], scale: 1.1 } : { y: 0, scale: 1 }}
+              transition={{ 
+                y: { repeat: dragging ? Infinity : 0, duration: 2, ease: "easeInOut" },
+                scale: { duration: 0.2 }
+              }}
+              className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-colors shadow-sm ${dragging ? 'bg-green-100' : 'bg-slate-100'}`}
+            >
               <svg
                 className={dragging ? 'text-green-600' : 'text-slate-400'}
                 width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"
@@ -71,7 +86,7 @@ export default function UploadZone({ onFileSelect }: Props) {
                 <line x1="12" y1="12" x2="12" y2="21"/>
                 <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
               </svg>
-            </div>
+            </motion.div>
             <p className="text-sm font-semibold text-slate-700 mb-1">
               {dragging ? 'Drop it here' : 'Drop your plant photo here'}
             </p>
@@ -116,7 +131,7 @@ export default function UploadZone({ onFileSelect }: Props) {
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
 
       {sizeError && (
         <div className="mt-3 flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">

@@ -1,3 +1,7 @@
+'use client';
+
+import { motion } from 'framer-motion';
+
 const tips = [
   {
     icon: (
@@ -60,15 +64,20 @@ export default function PhotoGuide() {
         </div>
         <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Photo tips for better accuracy</p>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y sm:divide-y-0 divide-slate-100">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-2 gap-2">
         {tips.map((tip, i) => (
-          <div key={i} className="p-4 flex flex-col gap-2">
-            <div className="w-7 h-7 rounded-lg bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0">
+          <motion.div 
+            key={i} 
+            whileHover={{ scale: 1.02, y: -2 }}
+            transition={{ duration: 0.2 }}
+            className="p-4 flex flex-col gap-2 rounded-xl hover:bg-slate-50 hover:shadow-sm border border-transparent hover:border-slate-100 transition-colors cursor-default"
+          >
+            <div className="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0">
               {tip.icon}
             </div>
-            <p className="text-xs font-semibold text-slate-700">{tip.title}</p>
+            <p className="text-sm font-semibold text-slate-700 mt-1">{tip.title}</p>
             <p className="text-xs text-slate-400 leading-relaxed">{tip.description}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
