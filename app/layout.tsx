@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 import Navbar from '@/components/Navbar'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 export const metadata: Metadata = {
   title: 'CropCure',
@@ -11,12 +12,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <body>
-        <Navbar />
-        <main className="max-w-5xl mx-auto px-4 py-8">
-          {children}
-        </main>
+        <ThemeProvider>
+          <Navbar />
+          <main className="max-w-5xl mx-auto px-4 py-8">
+            {children}
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -29,7 +29,7 @@ export default function UploadPage() {
   }
 
   // TODO 19 ── handleAnalyze
-  // This is the main orchestration function. When the user clicks "Analyze Plant":
+  // This is the main orchestration function. When the user clicks "Analyze Crop":
   //
   // 1. Guard: return early if no file, reset error, set loading=true,
   //    set steps to ['active', 'waiting', 'waiting']
@@ -169,7 +169,7 @@ export default function UploadPage() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="22" y2="22" />
             </svg>
-            Analyze Plant
+            Analyze Crop
           </>
         )}
       </motion.button>

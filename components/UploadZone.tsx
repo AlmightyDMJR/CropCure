@@ -88,7 +88,7 @@ export default function UploadZone({ onFileSelect }: Props) {
               </svg>
             </motion.div>
             <p className="text-sm font-semibold text-slate-700 mb-1">
-              {dragging ? 'Drop it here' : 'Drop your plant photo here'}
+              {dragging ? 'Drop it here' : 'Drop your crop photo here'}
             </p>
             <p className="text-xs text-slate-400 mb-4">or click to browse from your device</p>
             <div className="flex gap-1.5 flex-wrap justify-center">
@@ -107,7 +107,7 @@ export default function UploadZone({ onFileSelect }: Props) {
             <div className="relative flex-shrink-0">
               <img
                 src={preview!}
-                alt="Plant preview"
+                alt="Crop preview"
                 className="w-32 h-32 object-cover rounded-xl border border-slate-200 shadow-sm"
               />
               <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
