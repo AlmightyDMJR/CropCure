@@ -1,6 +1,6 @@
-# PlantCheck — Starter Project
+# CropCure Project
 
-> AI-powered plant disease diagnosis built with **Next.js 16**, **Claude AI (Anthropic)**, and **InsForge**.
+> AI-powered plant disease diagnosis built with **Next.js 16**, **Ollama Llava AI (Consensus)**, and **InsForge**.
 
 This is the **workshop starter** for building PlantCheck from scratch. The full UI is already here — your job is to implement the backend logic step by step.
 
@@ -158,10 +158,3 @@ starter/
 
 ---
 
-## Tech stack
-
-- **[Next.js 16](https://nextjs.org)** — App Router, API routes, server components
-- **[Anthropic / Claude](https://anthropic.com)** — `claude-opus-4-5` vision model
-- **[InsForge](https://insforge.io)** — Postgres database + file storage
-- **[Tailwind CSS v4](https://tailwindcss.com)** — Utility-first styling
-- **[Geist](https://vercel.com/font)** — Typography
