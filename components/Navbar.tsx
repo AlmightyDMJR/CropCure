@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { useTheme } from 'next-themes'
+import insforge from '@/lib/insforge'
 
 function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
@@ -54,7 +55,27 @@ function ThemeToggle() {
 
 export default function Navbar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await insforge.auth.getCurrentUser()
+        setUser(data?.user || null)
+      } catch (err) {
+        console.error('Auth error:', err)
+      }
+    }
+    fetchUser()
+  }, [pathname])
+
+  const handleSignOut = async () => {
+    await insforge.auth.signOut()
+    setUser(null)
+    router.push('/')
+  }
 
   const links = [
     { href: '/history', label: 'History' },
@@ -101,6 +122,21 @@ export default function Navbar() {
           >
             New Diagnosis
           </Link>
+          {user ? (
+            <button
+              onClick={handleSignOut}
+              className="ml-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="ml-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-slate-700"
+            >
+              Sign In
+            </Link>
+          )}
           <div className="ml-1">
             <ThemeToggle />
           </div>
@@ -158,6 +194,25 @@ export default function Navbar() {
           >
             New Diagnosis
           </Link>
+          {user ? (
+            <button
+              onClick={() => {
+                handleSignOut()
+                setMenuOpen(false)
+              }}
+              className="mt-1 px-3 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium rounded-lg text-center border border-slate-200 dark:border-slate-700"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setMenuOpen(false)}
+              className="mt-1 px-3 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium rounded-lg text-center border border-slate-200 dark:border-slate-700"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       )}
     </nav>

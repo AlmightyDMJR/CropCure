@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
     
     const formData = await request.formData()
     const file = formData.get('image') as File | null;
+    const user_id = formData.get('user_id') as string | null;
     if(!file) return Response.json({ success: false, error: 'No image file provided' }, { status: 400 });
 
 
@@ -29,6 +30,7 @@ export async function POST(request: NextRequest) {
     const imageUrl = await uploadImageToStorage(buffer, filename);
     
     const diagnosis = await saveDiagnosis({ 
+      user_id: user_id || undefined,
       image_url: imageUrl,
       status:'pending',
       visual_markers: [],

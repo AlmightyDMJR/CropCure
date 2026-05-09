@@ -7,16 +7,18 @@ import type { DiagnosisResult } from './types'
 
 // TODO 1 ── Create the InsForge client
 // Use createClient() from @insforge/sdk, passing in your env vars:
-//   baseUrl  → process.env.INSFORGE_BASE_URL
-//   anonKey  → process.env.INSFORGE_ANON_KEY
+//   baseUrl  → process.env.NEXT_PUBLIC_INSFORGE_BASE_URL
+//   anonKey  → process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY
 //
 // const insforge = createClient({ ... })
 //
 // export default insforge
 
 const insforge = createClient({
-  baseUrl: process.env.INSFORGE_BASE_URL!,
-  anonKey: process.env.INSFORGE_ANON_KEY,
+  baseUrl: process.env.NEXT_PUBLIC_INSFORGE_BASE_URL!,
+  anonKey: typeof window === 'undefined' 
+    ? (process.env.INSFORGE_API_KEY || process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY) 
+    : process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY,
 })
 
 export default insforge
@@ -88,8 +90,17 @@ export async function getDiagnosis(id: string): Promise<DiagnosisResult> {
 //   2. Throw on error, return (results ?? []) cast as DiagnosisResult[]
 
 export async function getDiagnosisHistory(limit = 20): Promise<DiagnosisResult[]> {
-  const {data: results, error} = await insforge.database.from('diagnoses').select()
-  .order('created_at', {ascending: false}).limit(limit);
+  const { data: { user } } = await insforge.auth.getCurrentUser();
+  let query = insforge.database.from('diagnoses').select()
+    .order('created_at', {ascending: false}).limit(limit);
+
+  if (user) {
+    query = query.eq('user_id', user.id);
+  } else {
+    query = query.is('user_id', null);
+  }
+
+  const {data: results, error} = await query;
   if(error){
     throw new Error(`Failed to get diagnosis history: ${error.message}`);
   }

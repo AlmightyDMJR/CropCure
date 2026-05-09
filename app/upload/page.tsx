@@ -9,6 +9,7 @@ import { motion } from 'framer-motion'
 import PhotoGuide from '@/components/PhotoGuide'
 import UploadZone from '@/components/UploadZone'
 import LoadingDiagnosis from '@/components/LoadingDiagnosis'
+import insforge from '@/lib/insforge'
 
 type StepStatus = 'waiting' | 'active' | 'complete'
 
@@ -67,6 +68,13 @@ export default function UploadPage() {
     try {
       const form = new FormData();
       form.append("image", file);
+
+      // Fetch current user and append their ID if logged in
+      const { data: { user } } = await insforge.auth.getCurrentUser();
+      if (user) {
+        form.append("user_id", user.id);
+      }
+
       const uploadRes = await fetch("/api/upload", {
         method: "POST",
         body: form,

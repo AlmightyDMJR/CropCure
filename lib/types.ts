@@ -4,6 +4,7 @@
 
 export interface DiagnosisResult {
   id: string
+  user_id?: string
   created_at: string
   image_url: string
   primary_diagnosis: string

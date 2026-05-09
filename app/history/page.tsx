@@ -1,17 +1,41 @@
+'use client'
+
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { getDiagnosisHistory } from '@/lib/insforge'
 import SeverityBadge from '@/components/SeverityBadge'
 import type { DiagnosisResult } from '@/lib/types'
 
-export default async function HistoryPage() {
-  let diagnoses: Awaited<ReturnType<typeof getDiagnosisHistory>> = []
-  try {
-    diagnoses = await getDiagnosisHistory(20)
-  } catch {
-    // fall through to empty state
-  }
+export default function HistoryPage() {
+  const [diagnoses, setDiagnoses] = useState<DiagnosisResult[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchHistory() {
+      try {
+        const data = await getDiagnosisHistory(20)
+        setDiagnoses(data)
+      } catch (err) {
+        console.error('Failed to fetch history:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchHistory()
+  }, [])
 
   const completed = diagnoses.filter((d) => d.status === 'complete')
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto py-20 text-center text-slate-500 flex flex-col items-center justify-center">
+        <svg className="animate-spin w-8 h-8 mb-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+        </svg>
+        <p>Loading your history...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-2xl mx-auto">
