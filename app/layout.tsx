@@ -5,6 +5,7 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import ChatBot from '@/components/ChatBot'
+import { LanguageProvider } from '@/context/LanguageContext'
 
 export const metadata: Metadata = {
   title: 'CropCure',
@@ -16,11 +17,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
       <body>
         <ThemeProvider>
-          <Navbar />
-          <main className="max-w-5xl mx-auto px-4 py-8">
-            {children}
-          </main>
-          <ChatBot />
+          <LanguageProvider>
+            <Navbar />
+            <main className="max-w-5xl mx-auto px-4 py-8">
+              {children}
+            </main>
+            <ChatBot />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

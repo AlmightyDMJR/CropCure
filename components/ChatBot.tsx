@@ -2,13 +2,14 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface Message {
   role: 'user' | 'assistant'
   content: string
 }
 
-const SUGGESTED_QUESTIONS = [
+const SUGGESTED_QUESTIONS_EN = [
   '🌿 How do I treat leaf blight?',
   '🌦️ Best crops for monsoon season?',
   '🐛 How to identify & control aphids?',
@@ -16,19 +17,22 @@ const SUGGESTED_QUESTIONS = [
 ]
 
 export default function ChatBot() {
+  const { t, lang } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content:
-        "Hello! I'm **CropCure AI** 🌱 — your expert agricultural assistant. Ask me anything about crops, plant diseases, pests, weather impact, or farming techniques!",
-    },
+    { role: 'assistant', content: "Hello! I'm **CropCure AI** 🌱 — your expert agricultural assistant. Ask me anything about crops, plant diseases, pests, weather impact, or farming techniques!" },
   ])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  // Reset greeting when language changes
+  useEffect(() => {
+    setMessages([{ role: 'assistant', content: t.chatGreeting }])
+    setShowSuggestions(true)
+  }, [lang, t.chatGreeting])
 
   useEffect(() => {
     if (isOpen) {
@@ -175,7 +179,7 @@ export default function ChatBot() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold text-sm leading-tight">CropCure AI</p>
-                <p className="text-green-100 text-xs">Crop · Plant · Weather Expert</p>
+                <p className="text-green-100 text-xs">{t.chatSubtitle}</p>
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-green-300 animate-pulse" />
@@ -263,9 +267,9 @@ export default function ChatBot() {
                   transition={{ delay: 0.3 }}
                   className="pt-1"
                 >
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mb-2 px-1">Suggested questions:</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mb-2 px-1">💡</p>
                   <div className="flex flex-col gap-1.5">
-                    {SUGGESTED_QUESTIONS.map((q) => (
+                    {SUGGESTED_QUESTIONS_EN.map((q) => (
                       <button
                         key={q}
                         onClick={() => sendMessage(q.replace(/^[^\s]+\s/, ''))}
@@ -298,7 +302,7 @@ export default function ChatBot() {
                     e.target.style.height = Math.min(e.target.scrollHeight, 100) + 'px'
                   }}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask about crops, plants, weather…"
+                  placeholder={t.chatPlaceholder}
                   disabled={isLoading}
                   className="flex-1 resize-none rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-slate-400 dark:placeholder-slate-500 transition disabled:opacity-60"
                   style={{ minHeight: '42px', maxHeight: '100px' }}
@@ -323,7 +327,7 @@ export default function ChatBot() {
                 </motion.button>
               </div>
               <p className="text-center text-[10px] text-slate-300 dark:text-slate-600 mt-2">
-                Powered by CropCure AI · Press Enter to send
+                {t.chatPowered}
               </p>
             </div>
           </motion.div>

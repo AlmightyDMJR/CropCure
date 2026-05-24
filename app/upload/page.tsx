@@ -10,11 +10,13 @@ import PhotoGuide from '@/components/PhotoGuide'
 import UploadZone from '@/components/UploadZone'
 import LoadingDiagnosis from '@/components/LoadingDiagnosis'
 import insforge from '@/lib/insforge'
+import { useLanguage } from '@/context/LanguageContext'
 
 type StepStatus = 'waiting' | 'active' | 'complete'
 
 export default function UploadPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [steps, setSteps] = useState<[StepStatus, StepStatus, StepStatus]>(['waiting', 'waiting', 'waiting'])
@@ -128,11 +130,11 @@ export default function UploadPage() {
 
       {/* Header */}
       <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-green-600 mb-2">Crop Diagnosis</p>
-        <h1 className="font-display text-4xl font-semibold text-slate-900 leading-tight">
-          Upload your plant photo
+        <p className="text-xs font-semibold uppercase tracking-widest text-green-600 dark:text-green-400 mb-2">{t.upSubtitle}</p>
+        <h1 className="font-display text-4xl font-semibold text-slate-900 dark:text-white leading-tight">
+          {t.upTitle}
         </h1>
-        <p className="mt-2 text-sm text-slate-500">Get a full AI diagnosis with treatment steps in under 30 seconds.</p>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{t.upDesc}</p>
       </div>
 
       {/* Photo tips */}
@@ -170,14 +172,14 @@ export default function UploadPage() {
             <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M21 12a9 9 0 1 1-6.219-8.56" />
             </svg>
-            Analyzing…
+            {t.upAnalyzing}
           </>
         ) : (
           <>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="22" y2="22" />
             </svg>
-            Analyze Crop
+            {t.upAnalyze}
           </>
         )}
       </motion.button>

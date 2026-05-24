@@ -3,49 +3,52 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import LocalDetails from '@/components/LocalDetails'
-
-const features = [
-  {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-        <circle cx="12" cy="12" r="3" />
-      </svg>
-    ),
-    label: 'AI Vision',
-    title: 'See what your crop is telling you',
-    description: 'AI reads visual symptoms the same way a plant & crop pathologist would — distribution, tissue texture, lesion patterns.',
-  },
-  {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-      </svg>
-    ),
-    label: 'Honest Confidence',
-    title: 'Calibrated to the real world',
-    description: 'Scores reflect actual field accuracy — not inflated lab benchmarks. Ambiguous cases are flagged, not guessed.',
-  },
-  {
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-      </svg>
-    ),
-    label: 'Research-Backed',
-    title: 'Treatment from the literature',
-    description: 'Every recommendation traces back to peer-reviewed plant & crop pathology research — not gardening forums.',
-  },
-]
-
-const steps = [
-  { n: '01', text: 'Take a close-up photo of the affected area' },
-  { n: '02', text: 'Upload it — drag & drop or tap to browse' },
-  { n: '03', text: 'Get a full diagnosis with confidence score and treatment plan' },
-]
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function HomePage() {
+  const { t } = useLanguage()
+
+  const features = [
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      ),
+      label: t.feat1Label,
+      title: t.feat1Title,
+      description: t.feat1Desc,
+    },
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+      ),
+      label: t.feat2Label,
+      title: t.feat2Title,
+      description: t.feat2Desc,
+    },
+    {
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+      ),
+      label: t.feat3Label,
+      title: t.feat3Title,
+      description: t.feat3Desc,
+    },
+  ]
+
+  const steps = [
+    { n: '01', text: t.step1 },
+    { n: '02', text: t.step2 },
+    { n: '03', text: t.step3 },
+  ]
+
   return (
     <div className="min-h-[calc(100vh-4rem)]">
 
@@ -61,30 +64,30 @@ export default function HomePage() {
         <div className="relative max-w-3xl mx-auto text-center px-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-3.5 py-1.5 text-xs font-medium text-green-700 dark:text-green-400 mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-            Powered by AI Vision
+            {t.heroTagline}
           </div>
 
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             whileHover={{ scale: 1.03, textShadow: "0px 15px 30px rgba(0,0,0,0.1)" }}
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="font-display text-5xl sm:text-6xl lg:text-7xl font-semibold text-slate-900 dark:text-white leading-[1.05] tracking-tight mb-6 cursor-default inline-block"
           >
-            Know what&apos;s wrong<br />
-            <span className="text-gradient">with your crop.</span>
+            {t.heroTitle1}<br />
+            <span className="text-gradient">{t.heroTitle2}</span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
             className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed mb-10"
           >
-            Upload a photo and get an AI-powered diagnosis with treatment steps grounded in plant & crop pathology research — in under 30 seconds.
+            {t.heroDescription}
           </motion.p>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
@@ -100,11 +103,10 @@ export default function HomePage() {
                   <line x1="12" y1="12" x2="12" y2="21" />
                   <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
                 </svg>
-                Start Diagnosis
+                {t.heroCta}
               </Link>
             </motion.div>
 
-            {/* Local Details button — scrolls to bottom section */}
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
               <a
                 href="#local-details"
@@ -114,36 +116,36 @@ export default function HomePage() {
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                   <circle cx="12" cy="10" r="3"/>
                 </svg>
-                Local Details
+                {t.heroCtaSub}
               </a>
             </motion.div>
           </motion.div>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mt-5 text-xs text-slate-400 dark:text-slate-500"
           >
-            Treatment guidance informed by peer-reviewed plant & crop pathology research
+            {t.heroResearch}
           </motion.p>
         </div>
       </section>
 
       {/* ── How it works ── */}
       <section className="max-w-4xl mx-auto px-4 mb-20">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
           className="rounded-2xl bg-slate-900 dark:bg-slate-800/80 p-8 sm:p-10"
         >
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-6">How it works</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-6">{t.howTitle}</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {steps.map((s, i) => (
-              <motion.div 
-                key={s.n} 
+              <motion.div
+                key={s.n}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
@@ -161,20 +163,20 @@ export default function HomePage() {
 
       {/* ── Features ── */}
       <section className="max-w-5xl mx-auto px-4 pb-20">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="text-center mb-10"
         >
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Why CropCure</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">Built for accuracy, not impressiveness</h2>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">{t.whyTitle}</p>
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">{t.whyHeading}</h2>
         </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {features.map((f, i) => (
             <motion.div
-              key={f.title}
+              key={f.label}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -202,18 +204,16 @@ export default function HomePage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-8"
         >
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">Your Location</p>
-          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">Local Farming Intelligence</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-lg mx-auto">
-            Real-time weather, soil health estimates, and today&apos;s crop market prices — all tailored to your region.
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">{t.localLabel}</p>
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white">{t.localHeading}</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-lg mx-auto">{t.localDesc}</p>
         </motion.div>
         <LocalDetails />
       </section>
 
       {/* ── Footer ── */}
       <footer className="text-center py-8 text-sm text-slate-400 dark:text-slate-600 border-t border-slate-100 dark:border-slate-800">
-        &copy; 2026 CropCure
+        {t.footer}
       </footer>
     </div>
   )

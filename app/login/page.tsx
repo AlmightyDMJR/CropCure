@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import insforge from '@/lib/insforge';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function LoginPage() {
+  const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,13 +68,13 @@ export default function LoginPage() {
             layout="position"
             className="text-3xl font-display font-semibold text-slate-900 dark:text-white tracking-tight"
           >
-            {isLogin ? 'Welcome back' : 'Create an account'}
+            {isLogin ? t.logWelcomeIn : t.logWelcomeUp}
           </motion.h2>
           <motion.p 
             layout="position"
             className="mt-2 text-sm text-slate-500 dark:text-slate-400"
           >
-            {isLogin ? 'Enter your details to access your dashboard.' : 'Start analyzing your crops today.'}
+            {isLogin ? t.logSubIn : t.logSubUp}
           </motion.p>
         </div>
 
@@ -94,7 +96,7 @@ export default function LoginPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="email">
-                  Email address
+                  {t.logEmail}
                 </label>
                 <input
                   id="email"
@@ -111,7 +113,7 @@ export default function LoginPage() {
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" htmlFor="password">
-                  Password
+                  {t.logPass}
                 </label>
                 <div className="relative">
                   <input
@@ -162,9 +164,9 @@ export default function LoginPage() {
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               ) : isLogin ? (
-                'Sign in'
+                t.logBtnIn
               ) : (
-                'Sign up'
+                t.logBtnUp
               )}
             </motion.button>
           </form>
@@ -176,7 +178,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white dark:bg-slate-900 text-slate-500">
-                  {isLogin ? 'New to CropCure?' : 'Already have an account?'}
+                  {isLogin ? t.logToggleIn : t.logToggleUp}
                 </span>
               </div>
             </div>
@@ -189,7 +191,7 @@ export default function LoginPage() {
                 }}
                 className="w-full flex justify-center py-2.5 px-4 border border-slate-300 dark:border-slate-700 rounded-xl shadow-sm text-sm font-medium text-slate-700 dark:text-slate-300 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
               >
-                {isLogin ? 'Create an account' : 'Sign in instead'}
+                {isLogin ? t.logToggleIn : t.logToggleUp}
               </button>
             </div>
           </div>

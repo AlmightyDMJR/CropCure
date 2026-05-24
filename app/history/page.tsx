@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react'
 import { getDiagnosisHistory } from '@/lib/insforge'
 import SeverityBadge from '@/components/SeverityBadge'
 import type { DiagnosisResult } from '@/lib/types'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function HistoryPage() {
+  const { t } = useLanguage()
   const [diagnoses, setDiagnoses] = useState<DiagnosisResult[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -32,7 +34,7 @@ export default function HistoryPage() {
         <svg className="animate-spin w-8 h-8 mb-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M21 12a9 9 0 1 1-6.219-8.56" />
         </svg>
-        <p>Loading your history...</p>
+        <p>{t.histLoading}</p>
       </div>
     )
   }
@@ -42,12 +44,12 @@ export default function HistoryPage() {
 
       {/* Header */}
       <div className="mb-8">
-        <p className="text-xs font-semibold uppercase tracking-widest text-green-600 dark:text-green-400 mb-2">Your records</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-green-600 dark:text-green-400 mb-2">{t.histLabel}</p>
         <div className="flex items-baseline gap-3">
-          <h1 className="font-display text-4xl font-semibold text-slate-900 dark:text-white">Diagnosis History</h1>
+          <h1 className="font-display text-4xl font-semibold text-slate-900 dark:text-white">{t.histTitle}</h1>
           {completed.length > 0 && (
             <span className="text-sm text-slate-400 dark:text-slate-500 font-medium">
-              {completed.length} {completed.length === 1 ? 'result' : 'results'}
+              {completed.length} {t.histResults}
             </span>
           )}
         </div>
@@ -60,13 +62,13 @@ export default function HistoryPage() {
               <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2-13.5 5.5.17-1.08.53-2.03 1.04-2.82A8 8 0 0 1 17 8z"/>
             </svg>
           </div>
-          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-1">No diagnoses yet</p>
-          <p className="text-sm text-slate-400 dark:text-slate-500 mb-6">Upload a photo to get your first plant diagnosis.</p>
+          <p className="font-semibold text-slate-700 dark:text-slate-200 mb-1">{t.histEmptyTitle}</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 mb-6">{t.histEmptyDesc}</p>
           <Link
             href="/upload"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm shadow-green-200 dark:shadow-green-900/30"
           >
-            Start Diagnosis
+            {t.histBtn}
           </Link>
         </div>
       ) : (
@@ -109,7 +111,7 @@ export default function HistoryPage() {
               <div className="flex items-center gap-3 flex-shrink-0">
                 <div className="text-right">
                   <p className="text-sm font-bold tabular-nums text-slate-700 dark:text-slate-200">{d.confidence_score}%</p>
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500">confidence</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500">{t.histConf}</p>
                 </div>
                 <svg
                   className="text-slate-300 group-hover:text-green-500 transition-colors"
