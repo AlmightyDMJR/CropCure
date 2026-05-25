@@ -1,4 +1,4 @@
-// ─── AI vision analysis (Claude / Ollama and Consensus MCP) ─────────────────────────────────
+// ─── AI vision analysis (Ollama and Consensus MCP) ─────────────────────────────────
 // Despite the filename, this module previously used the Ollama SDK 
 // It now sends a base64-encoded plant photo to Ollama API and parses the structured
 // JSON diagnosis that comes back.

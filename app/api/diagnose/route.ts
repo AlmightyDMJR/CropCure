@@ -4,7 +4,7 @@
 // and updates the diagnosis row to status='complete' (or 'error' on failure).
 // 
 // Has a 25-second hard timeout to avoid serverless function timeouts.
-// We are using Ollama api with help of Claude and Consensus MCP
+// We are using Ollama api with help of Consensus MCP
 
 import { NextRequest } from 'next/server'
 import { analyzePlantImage } from '@/lib/gemini'

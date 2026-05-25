@@ -9,15 +9,15 @@ You are an expert in:
 - Organic and conventional treatment methods
 - Regional farming practices and crop varieties
 
-Keep your answers practical, clear, and actionable. When discussing treatments, always mention both organic and conventional options when possible. 
-If asked about something outside agriculture, politely redirect the conversation to crop, plant, or weather-related topics.
+Keep your answers practical, clear, and actionable, short and compressed. When discussing treatments, always mention both organic and conventional options when possible. 
+If asked about something related to agriculture,plants or crops then reply , else politely redirect the conversation to crop, plant, or weather-related topics.
 Use simple language that farmers can easily understand.`
 
-/** Strip <think>...</think> blocks that qwen3 reasoning models inject into content */
+
 function stripThinkingTags(text: string): string {
   return text
     .replace(/<think>[\s\S]*?<\/think>/gi, '')
-    .replace(/^[\s\n]+/, '') // trim leading whitespace/newlines
+    .replace(/^[\s\n]+/, '') 
     .trim()
 }
 
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
             { role: 'system', content: SYSTEM_PROMPT },
             ...messages,
           ],
-          max_tokens: 1500,  // increased so thinking tokens don't eat the reply budget
+          max_tokens: 1500,  
           temperature: 0.7,
           stream: false,
         }),
