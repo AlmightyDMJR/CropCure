@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 interface WeatherData {
   city: string; country: string; temp: number; feelsLike: number
   humidity: number; windSpeed: number; description: string; emoji: string
-  pressure: number; visibility: number; clouds: number
+  pressure: number; visibility: number; clouds: number; code: number
 }
 interface SoilData {
   ph: number; moisture: number; nitrogen: number
@@ -123,9 +123,16 @@ function Skeleton() {
 }
 
 function WeatherCard({ d }: { d: WeatherData }) {
+  const threats: string[] = []
+  if (d.temp > 35) threats.push('Heat stress')
+  if (d.temp < 5) threats.push('Frost risk')
+  if (d.windSpeed > 10) threats.push('High winds')
+  if (d.code >= 61 && d.code <= 99) threats.push('Heavy precipitation')
+  if (d.humidity > 85 && d.temp > 25) threats.push('Fungal risk')
+
   return (
     <motion.div initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.4 }}
-      className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 p-6 shadow-sm">
+      className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 p-6 shadow-sm flex flex-col h-full">
       <Label icon={<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>} text="Live Weather" />
       <div className="flex items-center gap-3 mb-3">
         <span className="text-5xl">{d.emoji}</span>
@@ -135,12 +142,26 @@ function WeatherCard({ d }: { d: WeatherData }) {
         </div>
       </div>
       <p className="text-[13px] font-semibold text-slate-700 dark:text-slate-300 mb-3">📍 {d.city}{d.country ? `, ${d.country}` : ''}</p>
-      <Row label="Feels like"  val={`${d.feelsLike}°C`} />
-      <Row label="Humidity"    val={`${d.humidity}%`} />
-      <Row label="Wind"        val={d.windSpeed} sub="m/s" />
-      <Row label="Pressure"    val={d.pressure} sub="hPa" />
-      <Row label="Visibility"  val={d.visibility} sub="km" />
-      <Row label="Cloud Cover" val={`${d.clouds}%`} />
+      
+      <div className="flex-1">
+        <Row label="Feels like"  val={`${d.feelsLike}°C`} />
+        <Row label="Humidity"    val={`${d.humidity}%`} />
+        <Row label="Wind"        val={d.windSpeed} sub="m/s" />
+        <Row label="Pressure"    val={d.pressure} sub="hPa" />
+        <Row label="Visibility"  val={d.visibility} sub="km" />
+        <Row label="Cloud Cover" val={`${d.clouds}%`} />
+      </div>
+
+      {threats.length > 0 && (
+        <div className="mt-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50">
+          <p className="text-xs font-semibold text-red-700 dark:text-red-400 mb-1 flex items-center gap-1.5">
+            ⚠️ Potential Threats
+          </p>
+          <ul className="list-disc pl-4 text-[11px] text-red-600 dark:text-red-300 space-y-0.5 font-medium">
+            {threats.map((t, i) => <li key={i}>{t}</li>)}
+          </ul>
+        </div>
+      )}
     </motion.div>
   )
 }
@@ -215,7 +236,7 @@ export default function LocalDetails() {
     try {
       const w = await fetchOpenMeteo(la, lo)
       const { label, emoji } = wmoToInfo(w.code)
-      setWeather({ city: name, country, temp: w.temp, feelsLike: w.feelsLike, humidity: w.humidity, windSpeed: w.windSpeed, description: label, emoji, pressure: w.pressure, visibility: w.visibility, clouds: w.clouds })
+      setWeather({ city: name, country, temp: w.temp, feelsLike: w.feelsLike, humidity: w.humidity, windSpeed: w.windSpeed, description: label, emoji, pressure: w.pressure, visibility: w.visibility, clouds: w.clouds, code: w.code })
       setSoil(getMockSoil(la, lo))
       setStatus('done')
     } catch (e: any) { setError(e.message || 'Failed to fetch weather.'); setStatus('error') }
